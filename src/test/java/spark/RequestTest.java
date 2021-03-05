@@ -50,8 +50,8 @@ public class RequestTest {
     HttpSession httpSession;
     Request request;
 
-    RouteMatch match = new RouteMatch(null, "/hi", "/hi", "text/html");
-    RouteMatch matchWithParams = new RouteMatch(null, "/users/:username", "/users/bob", "text/html");
+    RouteMatch match = new RouteMatch(null, "/hi", "/hi", "text/html", null);
+    RouteMatch matchWithParams = new RouteMatch(null, "/users/:username", "/users/bob", "text/html", null);
 
     @Before
     public void setup() {
@@ -168,7 +168,7 @@ public class RequestTest {
     }
 
     @Test
-    public void matchedRoutePathShouldBeNullInBefore() throws Exception {
+    public void matchedRoutePathShouldNotBeNullInBefore() throws Exception {
         final AtomicReference<String> matchedRoutePath = new AtomicReference<>();
         before((q, p) -> {
             matchedRoutePath.set(q.matchedRoutePath());
@@ -176,7 +176,8 @@ public class RequestTest {
 
         http.get("/users/bob");
 
-        assertNull(matchedRoutePath.get());
+        assertNotNull(matchedRoutePath.get());
+        assertThat(matchedRoutePath.get(), is(THE_MATCHED_ROUTE));
     }
 
     @Test
